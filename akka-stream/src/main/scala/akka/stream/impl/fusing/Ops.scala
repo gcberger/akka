@@ -74,7 +74,7 @@ private[akka] final object Collect {
   final val NotApplied: Any ⇒ Any = _ ⇒ Collect.NotApplied
 }
 
-private[akka] final case class Collect[In, Out](decider: Supervision.Decider)(pf: PartialFunction[In, Out]) extends PushStage[In, Out] {
+private[akka] final case class Collect[In, Out](pf: PartialFunction[In, Out], decider: Supervision.Decider) extends PushStage[In, Out] {
 
   import Collect.NotApplied
 

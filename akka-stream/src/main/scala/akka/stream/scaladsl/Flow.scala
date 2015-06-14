@@ -542,6 +542,25 @@ trait FlowOps[+Out, +Mat] {
   def scan[T](zero: T)(f: (T, Out) ⇒ T): Repr[T, Mat] = andThen(Scan(zero, f.asInstanceOf[(Any, Any) ⇒ Any]))
 
   /**
+   * Similar to `scan` but only emits its result when the upstream completes,
+   * after which it also completes. Applies the given function towards its current and next value,
+   * yielding the next current value.
+   *
+   * If the function `f` throws an exception and the supervision decision is
+   * [[akka.stream.Supervision.Restart]] current value starts at `zero` again
+   * the stream will continue.
+   *
+   * '''Emits when''' upstream completes
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   */
+  def fold[T](zero: T)(f: (T, Out) ⇒ T): Repr[T, Mat] = andThen(Fold(zero, f.asInstanceOf[(Any, Any) ⇒ Any]))
+
+  /**
    * Chunk up this stream into groups of elements received within a time window,
    * or limited by the given number of elements, whatever happens first.
    * Empty groups will not be emitted if no elements are received from upstream.
