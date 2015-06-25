@@ -48,12 +48,14 @@ trait SnapshotStore extends Actor with ActorLogging {
       } finally senderPersistentActor() ! evt // sender is persistentActor
 
     case d @ DeleteSnapshot(metadata) ⇒
-      deleteAsync(metadata) map {
+      val result = deleteAsync(metadata) map {
         case _ ⇒ DeleteSnapshotSuccess(metadata)
       } recover {
         case e ⇒ DeleteSnapshotFailure(metadata, e)
-      } to (self, senderPersistentActor())
-      if (publish) context.system.eventStream.publish(d)
+      }
+      result to (self, senderPersistentActor())
+      if (publish)
+        result.foreach { _ ⇒ context.system.eventStream.publish(d) }
 
     case evt: DeleteSnapshotSuccess ⇒
       try tryReceivePluginInternal(evt) finally senderPersistentActor() ! evt
@@ -61,12 +63,14 @@ trait SnapshotStore extends Actor with ActorLogging {
       try tryReceivePluginInternal(evt) finally senderPersistentActor() ! evt
 
     case d @ DeleteSnapshots(persistenceId, criteria) ⇒
-      deleteAsync(persistenceId, criteria) map {
+      val result = deleteAsync(persistenceId, criteria) map {
         case _ ⇒ DeleteSnapshotsSuccess(criteria)
       } recover {
         case e ⇒ DeleteSnapshotsFailure(criteria, e)
-      } to (self, senderPersistentActor())
-      if (publish) context.system.eventStream.publish(d)
+      }
+      result to (self, senderPersistentActor())
+      if (publish)
+        result.foreach { _ ⇒ context.system.eventStream.publish(d) }
 
     case evt: DeleteSnapshotsFailure ⇒
       try tryReceivePluginInternal(evt) finally senderPersistentActor() ! evt // sender is persistentActor
