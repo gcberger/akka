@@ -134,6 +134,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
     builder.setPayload(persistentPayloadBuilder(persistent.payload.asInstanceOf[AnyRef]))
     builder.setSequenceNr(persistent.sequenceNr)
     builder.setDeleted(persistent.deleted)
+    if (persistent.writerUuid != Undefined) builder.setWriterUuid(persistent.writerUuid)
     builder
   }
 
@@ -175,7 +176,8 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
       if (persistentMessage.hasPersistenceId) persistentMessage.getPersistenceId else Undefined,
       if (persistentMessage.hasManifest) persistentMessage.getManifest else Undefined,
       persistentMessage.getDeleted,
-      if (persistentMessage.hasSender) system.provider.resolveActorRef(persistentMessage.getSender) else Actor.noSender)
+      if (persistentMessage.hasSender) system.provider.resolveActorRef(persistentMessage.getSender) else Actor.noSender,
+      if (persistentMessage.hasWriterUuid) persistentMessage.getWriterUuid else Undefined)
   }
 
   private def atomicWrite(atomicWrite: mf.AtomicWrite): AtomicWrite = {
