@@ -3,7 +3,7 @@
  */
 package akka.typed
 
-import org.scalautils.ConversionCheckedTripleEquals
+import org.scalactic.ConversionCheckedTripleEquals
 
 class BehaviorSpec extends TypedSpec with ConversionCheckedTripleEquals {
 

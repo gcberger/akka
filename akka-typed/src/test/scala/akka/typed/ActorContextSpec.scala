@@ -2,7 +2,7 @@ package akka.typed
 
 import scala.concurrent.duration._
 import scala.concurrent.Future
-import org.scalautils.ConversionCheckedTripleEquals
+import org.scalactic.ConversionCheckedTripleEquals
 import com.typesafe.config.ConfigFactory
 import akka.actor.DeadLetterSuppression
 

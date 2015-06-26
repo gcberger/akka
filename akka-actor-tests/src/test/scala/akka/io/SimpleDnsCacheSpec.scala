@@ -3,9 +3,9 @@ package akka.io
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicLong
 
-import org.scalatest.{ ShouldMatchers, WordSpec }
+import org.scalatest.{ Matchers, WordSpec }
 
-class SimpleDnsCacheSpec extends WordSpec with ShouldMatchers {
+class SimpleDnsCacheSpec extends WordSpec with Matchers {
   "Cache" should {
     "not reply with expired but not yet swept out entries" in {
       val localClock = new AtomicLong(0)
